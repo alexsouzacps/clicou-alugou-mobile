@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Clicou Alugou",
+    "slug": "clicou-alugou",
+    "version": "1.0.0",
+    "scheme": "clicoualugou",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#012247"
+    },
+    "ios": {
+      "bundleIdentifier": "br.com.clicoualugou.app",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Para fotografar problemas de manutenção e documentos de vistoria.",
+        "NSPhotoLibraryUsageDescription": "Para selecionar fotos de manutenção, vistoria ou avatar da galeria.",
+        "NSLocationWhenInUseUsageDescription": "Para mostrar imóveis próximos da sua localização."
+      }
+    },
+    "android": {
+      "package": "br.com.clicoualugou.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#012247"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "VIBRATE"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-notifications",
+      "expo-local-authentication",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permitir acesso à localização para listar imóveis próximos."
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
