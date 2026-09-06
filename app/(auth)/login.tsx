@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,6 @@ import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { supabase } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -21,7 +20,6 @@ import { colors } from '@/constants/colors';
 import { typography } from '@/constants/typography';
 import { spacing, radius } from '@/constants/layout';
 import { handleSupabaseError } from '@/utils/errorHandler';
-import { authenticateWithBiometrics, isBiometricsEnabled } from '@/utils/biometrics';
 import { isValidEmail } from '@/utils/validation';
 import { useOnboardingStore } from '@/store/onboardingStore';
 
@@ -33,29 +31,6 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [biometricsAvailable, setBiometricsAvailable] = useState(false);
-
-  useEffect(() => {
-    checkBiometrics();
-  }, []);
-
-  async function checkBiometrics() {
-    const enabled = await isBiometricsEnabled();
-    setBiometricsAvailable(enabled);
-  }
-
-  async function handleBiometrics() {
-    const success = await authenticateWithBiometrics();
-    if (success) {
-      const { data, error } = await supabase.auth.refreshSession();
-      if (error) {
-        Alert.alert('Sessão expirada', 'Por favor, entre com e-mail e senha.');
-      } else if (data.session) {
-        useOnboardingStore.getState().setIsGuest(false);
-        router.replace('/(tabs)');
-      }
-    }
-  }
 
   async function handleEmailLogin() {
     if (!email.trim() || !password.trim()) {
@@ -214,14 +189,6 @@ export default function LoginScreen() {
             fullWidth
             style={styles.submitButton}
           />
-
-          {/* Biometria (se habilitada) */}
-          {biometricsAvailable && (
-            <TouchableOpacity style={styles.biometricsButton} onPress={handleBiometrics}>
-              <MaterialCommunityIcons name="fingerprint" size={28} color={colors.cyan} />
-              <Text style={styles.biometricsText}>Entrar com Face ID / Touch ID</Text>
-            </TouchableOpacity>
-          )}
         </View>
 
         {/* Footer Cadastre-se */}
@@ -307,19 +274,6 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: spacing.xs,
-  },
-  biometricsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  biometricsText: {
-    fontSize: typography.sizes.sm,
-    color: colors.cyan,
-    fontWeight: typography.weights.semibold,
-    marginLeft: spacing.sm,
   },
   footer: {
     alignItems: 'center',

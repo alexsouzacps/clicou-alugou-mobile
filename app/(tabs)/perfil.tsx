@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -25,35 +25,14 @@ import { typography } from '@/constants/typography';
 import { spacing, radius } from '@/constants/layout';
 import { formatCPF, formatPhone } from '@/utils/format';
 import { validateImageFile } from '@/utils/uploadValidator';
-import { isBiometricsEnabled, setBiometricsEnabled, isBiometricsAvailable } from '@/utils/biometrics';
 import { useOnboardingStore } from '@/store/onboardingStore';
 
 export default function PerfilScreen() {
   const router = useRouter();
   const { user, profile, logout } = useAuth();
 
-  const [biometrics, setBiometrics] = useState(false);
-  const [biometricsSupported, setBiometricsSupported] = useState(false);
   const [pushEnabled, setPushEnabled] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-
-  useEffect(() => {
-    loadPreferences();
-  }, []);
-
-  async function loadPreferences() {
-    const supported = await isBiometricsAvailable();
-    setBiometricsSupported(supported);
-    if (supported) {
-      const enabled = await isBiometricsEnabled();
-      setBiometrics(enabled);
-    }
-  }
-
-  async function handleToggleBiometrics(value: boolean) {
-    setBiometrics(value);
-    await setBiometricsEnabled(value);
-  }
 
   async function handlePickAvatar() {
     if (!user) return;
@@ -216,24 +195,6 @@ export default function PerfilScreen() {
         {/* Seção: Preferências e Segurança */}
         <Text style={styles.sectionHeader}>Segurança & Preferências</Text>
         <Card style={styles.infoCard}>
-          {biometricsSupported && (
-            <>
-              <View style={styles.switchRow}>
-                <View style={styles.switchLabelContainer}>
-                  <MaterialCommunityIcons name="fingerprint" size={22} color={colors.navy} />
-                  <Text style={styles.switchLabel}>Face ID / Biometria</Text>
-                </View>
-                <Switch
-                  value={biometrics}
-                  onValueChange={handleToggleBiometrics}
-                  trackColor={{ false: colors.border.default, true: colors.cyan }}
-                  thumbColor={colors.white}
-                />
-              </View>
-              <View style={styles.divider} />
-            </>
-          )}
-
           <View style={styles.switchRow}>
             <View style={styles.switchLabelContainer}>
               <MaterialCommunityIcons name="bell-outline" size={22} color={colors.navy} />
